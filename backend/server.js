@@ -13,7 +13,7 @@ app.use((req, res, next) => {
   });
 });
 
-app.use(express);
+app.use(express.json());
 
 //routes
 app.use("/api/workouts", workoutRoutes);
