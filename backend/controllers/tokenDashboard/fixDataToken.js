@@ -45,18 +45,18 @@ async function updateCostByToken(tokenName, blockchain, wallet, tx) {
     if (!wallet || !blockchain || !tokenName || !tx) {
         return res.status(500).json({ error: "One of the argument is missing" });
     }
-    if (wallet.listTx[type] == "buy") {
     let quantity = wallet.listTx[tx].quantity;
     let cotation = wallet.listTx[tx].cotation;
     let value = wallet.listTx[tx].value;
     let costByToken = wallet.listBlockchain[blockchain].listToken[tokenName].costByToken;
     let walletQuantity = wallet.listBlockchain[blockchain].listToken[tokenName].quantity;
-    wallet.listBlockchain[blockchain].listToken[tokenName].costByToken = (value + walletQuantity * costByToken) / (walletQuantity + quantity);
-    wallet.listBlockchain[blockchain].listToken[tokenName].quantity += quantity;
-} else  if (wallet.listTx[type] == "sell") {
-
+    if (wallet.listTx[type] == "buy") {
+        wallet.listBlockchain[blockchain].listToken[tokenName].costByToken = (value + walletQuantity * costByToken) / (walletQuantity + quantity);
+        wallet.listBlockchain[blockchain].listToken[tokenName].quantity += quantity;
     } else {
-
+        //Gestion des profits realise dans la fonction superieur.
+        wallet.listBlockchain[blockchain].listToken[tokenName].costByToken = (walletQuantity * costByToken - value) / (walletQuantity - quantity);
+        wallet.listBlockchain[blockchain].listToken[tokenName].quantity += quantity;
     }
     await wallet.save();
     res.status(200).json({"message": "cost by token updated"}); 
