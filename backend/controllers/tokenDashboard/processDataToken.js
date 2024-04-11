@@ -34,3 +34,9 @@ async function getPartOfTokenInPortfolio(tokenName, blockchain, wallet) {
     let part = value / totalValue;
     res.status(200).json({partOfTokenInPortfolio : part});
 }
+
+module.exports = {
+    getTokenUnrealizedProfit,
+    getTokenPerformance,
+    getPartOfTokenInPortfolio
+}

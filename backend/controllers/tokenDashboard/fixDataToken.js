@@ -61,3 +61,12 @@ async function updateCostByToken(tokenName, blockchain, wallet, tx) {
     await wallet.save();
     res.status(200).json({"message": "cost by token updated"}); 
 }
+
+module.exports = {
+    increaseQuantityOfToken,
+    decreaseQuantityOfToken,
+    getQuantityOfToken,
+    increaseRealizedProfit,
+    getRealizedProfit,
+    updateCostByToken
+}
