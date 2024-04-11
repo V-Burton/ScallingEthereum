@@ -74,3 +74,11 @@ async function getCotation(tokenName) {
     // or a database query
     return 10;
 }
+
+module.exports = {
+    findWalletByAddress,
+    getValueOfWallet,
+    getTotalUnrealizedProfit,
+    getPartOfBlockchainInPotfolio,
+    getCotation
+}

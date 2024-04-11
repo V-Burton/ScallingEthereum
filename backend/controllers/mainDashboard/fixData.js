@@ -54,3 +54,12 @@ async function getBlockchainNames(wallet) {
         .map(blockchain => blockchain.name);
         res.status(200).json({blockchainName: blockchainN});
 }
+
+module.exports = {
+    increaseFiatIn,
+    getFiatIn,
+    increaseFiatOut,
+    getFiatOut,
+    getRealizeProfit,
+    getBlockchainNames
+}
