@@ -41,7 +41,11 @@ const txSchema = new Schema({
     },
     olderCotation: {
         type: Number,
-        required: true,
+        required: false,
+    },
+    token_received: {
+        type: String,
+        required: false,
     }
 })
 
@@ -77,6 +81,14 @@ const blockchainSchema = new Schema({
         type: [tokenSchema],
         required: true,
     },
+    listTx: {
+        type: [txSchema],
+        required: true,
+    },
+    lastDateScan: {
+        type: String,
+        required: true,
+    } 
 })
 
 const walletSchema = new Schema({
@@ -101,14 +113,6 @@ const walletSchema = new Schema({
         type: [blockchainSchema],
         required: true,
     },
-    listTx: {
-        type: [txSchema],
-        required: true,
-    },
-    lastDateScan: {
-        type: String,
-        required: true,
-    } 
 })
 
 module.exports = mongoose.model("tx", txSchema);

@@ -2,39 +2,39 @@ const Wallet = require("../../models/models");
 
 async function increaseFiatIn(wallet, amount) {
     if (!wallet) {
-        return res.status(500).json({ error: "Wallet doesn't exist" });
+        throw new Error("Wallet doesn't exist");
     }
     wallet.fiatIn += amount;
     await wallet.save();
-    res.status(200).json({"message": "fiat increased"}); 
+    return { message: "fiat increased", wallet };
 }
 
 async function getFiatIn(wallet) {
     if (!wallet) {
-        return res.status(500).json({ error: "Wallet doesn't exist" });
+        throw new Error("Wallet doesn't exist");
     }
-    res.status(200).json(wallet.fiatIn);
+    return { fiatIn: wallet.fiatIn };
 }
 
 async function increaseFiatOut(wallet, amount) {
     if (!wallet) {
-        return res.status(500).json({ error: "Wallet doesn't exist" });
+        throw new Error("Wallet doesn't exist");
     }
     wallet.fiatOut += amount;
     await wallet.save();
-    res.status(200).json({"message": "fiat increased"}); 
+    return { message: "fiat increased", wallet };
 }
 
 async function getFiatOut(wallet) {
     if (!wallet) {
-        return res.status(500).json({ error: "Wallet doesn't exist" });
+        throw new Error("Wallet doesn't exist");
     }
-    res.status(200).json(wallet.fiatOut);
+    return { fiatOut: wallet.fiatOut };
 }
 
 async function getRealizeProfit(wallet) {
     if (!wallet) {
-        return res.status(500).json({ error: "Wallet doesn't exist" });
+        throw new Error("Wallet doesn't exist");
     }
     let realized = 0;
     wallet.blockchains.forEach((blockchain) => {
@@ -42,18 +42,19 @@ async function getRealizeProfit(wallet) {
             realized += token.realizeProfit;
         });
     });
-    res.status(200).json({realizedProfit : realized});
+    return { realizedProfit: realized };
 }
 
 async function getBlockchainNames(wallet) {
     if (!wallet) {
-        return res.status(500).json({ error: "Wallet doesn't exist" });
+        throw new Error("Wallet doesn't exist");
     }
     const blockchainN = wallet.listBlockchain
-        .filter( blockchain => blockckain.inUse)
+        .filter(blockchain => blockchain.inUse)
         .map(blockchain => blockchain.name);
-        res.status(200).json({blockchainName: blockchainN});
+    return { blockchainName: blockchainN };
 }
+
 
 module.exports = {
     increaseFiatIn,
