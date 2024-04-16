@@ -78,7 +78,8 @@ const blockchainSchema = new Schema({
         required: true,
     },
     listToken: {
-        type: [tokenSchema],
+        type: Map,
+        of: tokenSchema,
         required: true,
     },
     listTx: {
@@ -110,7 +111,8 @@ const walletSchema = new Schema({
         required: true,
     },
     listBlockchain: {
-        type: [blockchainSchema],
+        type: Map,
+        of: blockchainSchema,
         required: true,
     },
 })

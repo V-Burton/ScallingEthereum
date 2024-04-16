@@ -13,57 +13,62 @@ async function findWalletByAddress(address) {
     }
 }
 
-async function getValueOfWallet(address) {
-    const { wallet } = await findWalletByAddress(address);
-    if (!wallet) {
-        throw new Error("Wallet not found");
-    }
-
-    let value = 0;
-
-    wallet.listBlockchain.forEach((blockchain) => {
-        blockchain.listToken.forEach((token) => {
-            const costByToken = getCotation(blockchain.name);
-            value += token.quantity * costByToken;
+const getValueOfWallet = async (req, res) => {
+    const { address } = req.params;
+    try {
+        const result = await findWalletByAddress(address);
+        const wallet = result.wallet;
+        let value = 0;
+        wallet.listBlockchain.forEach((blockchain) => {
+            blockchain.listToken.forEach((token) => {
+                const cotation = getCotation(token.name);
+                value += token.quantity * cotation;
+            });
         });
-    });
-
-    return { getValueOfWallet: value };
+        res.status(200).json({ getValueOfWallet: value });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 }
 
-async function getTotalUnrealizedProfit(address) {
-    const { wallet } = await findWalletByAddress(address);
-    if (!wallet) {
-        throw new Error("Wallet not found");
-    }
-
-    let unrealizedProfit = 0;
-
-    wallet.listBlockchain.forEach((blockchain) => {
-        blockchain.listToken.forEach((token) => {
-            unrealizedProfit += getTokenUnrealizedProfit(token.name, blockchain.name, wallet);
+const getTotalUnrealizedProfit = async (req, res) => {
+    const { address } = req.params;
+    try {
+        const result = await findWalletByAddress(address);
+        const wallet = result.wallet;
+        let unrealizedProfit = 0;
+        wallet.listBlockchain.forEach((blockchain) => {
+            blockchain.listToken.forEach((token) => {
+                unrealizedProfit += getTokenUnrealizedProfit(token.name, blockchain.name, wallet);
+            });
         });
-    });
-
-    return { TotalUnrealizedProfit: unrealizedProfit };
+        res.status(200).json({ TotalUnrealizedProfit: unrealizedProfit });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 }
 
-async function getPartOfBlockchainInPotfolio(blockchainName, address) {
-    const { wallet } = await findWalletByAddress(address);
-    if (!wallet) {
-        throw new Error("Wallet not found");
+const getPartOfBlockchainInPotfolio = async (req, res) => {
+    const {address} = req.params;
+    const {blockchainName} = req.body;
+
+    try {
+        const result = await findWalletByAddress(address);
+        const wallet = result.wallet;
+        let value = 0;
+        let totalValue = (await getValueOfWallet(address)).getValueOfWallet;
+        wallet.listBlockchain[blockchainName].listToken.forEach((token) => {
+            const cotation = getCotation(token.name);
+            value += token.quantity * cotation;
+        });
+        let part = value / totalValue;
+        res.status(200).json({ partOfBlockchainInPortfolio: part });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal server error" });
     }
-
-    let value = 0;
-    let totalValue = (await getValueOfWallet(address)).getValueOfWallet;
-
-    wallet.listBlockchain[blockchainName].listToken.forEach((token) => {
-        const cotation = getCotation(token.name);
-        value += token.quantity * cotation;
-    });
-
-    let part = value / totalValue;
-    return { partOfBlockchainInPortfolio: part };
 }
 
 
