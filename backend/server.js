@@ -3,6 +3,7 @@ require("dotenv").config();
 const routes = require("./routes/mainRoutes");
 const app = express();
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 // middleware
 app.use((req, res, next) => {
@@ -14,6 +15,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+app.use(cors());
 
 // routes
 app.use("/", routes);

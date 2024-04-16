@@ -1,73 +1,25 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Home() {
+
+  const [ investedFiat, setInvestedFiat ] = useState(0);
+
+  const address = "0x1234567890123456789012345678901234567890";
+
+  useEffect(() => {
+    async function fetchInvestedFiat() {
+      const response = await fetch(`http://localhost:4001/getFiatIn/${address}`);
+      const data = await response.json();
+      setInvestedFiat(data.fiatIn);
+    }
+
+    fetchInvestedFiat();
+  }, [])
+
   return (
     <main className="flex flex-col justify-center items-center h-screen bg-gray-100">
       <div className="mb-8">
-        <ConnectButton.Custom>
-          {({
-            account,
-            chain,
-            openAccountModal,
-            openChainModal,
-            openConnectModal,
-            authenticationStatus,
-            mounted,
-          }) => {
-            const ready = mounted && authenticationStatus !== "loading";
-            const connected =
-              ready &&
-              account &&
-              chain &&
-              (!authenticationStatus ||
-                authenticationStatus === "authenticated");
-
-            return (
-              <div
-                {...(!ready && {
-                  "aria-hidden": true,
-                  style: {
-                    opacity: 0,
-                    pointerEvents: "none",
-                    userSelect: "none",
-                  },
-                })}
-              >
-                {connected ? (
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={openChainModal}
-                      className="flex items-center space-x-1 font-medium text-gray-800 hover:text-gray-600 focus:outline-none"
-                    >
-                      {chain.hasIcon && (
-                        <img
-                          src={chain.iconUrl}
-                          alt={chain.name ?? "Chain icon"}
-                          className="w-6 h-6 rounded-full"
-                        />
-                      )}
-                      <span>{chain.name}</span>
-                    </button>
-                    <button
-                      onClick={openAccountModal}
-                      className="px-4 py-2 text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none"
-                    >
-                      {account.displayName}
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={openConnectModal}
-                    className="px-4 py-2 text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none"
-                  >
-                    Connect Wallet
-                  </button>
-                )}
-              </div>
-            );
-          }}
-        </ConnectButton.Custom>
       </div>
       <div className="p-6 bg-white rounded-md shadow-md mb-8">
         <p className="text-gray-800 text-lg font-semibold mb-4">
@@ -75,7 +27,8 @@ function Home() {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <MetricCard label="Portfolio Value" />
-          <MetricCard label="Invested Fiat" />
+          <MetricCard label="Invested Fiat"/>
+          <p>{investedFiat}</p>
           <MetricCard label="Fiat Withdrawn" />
           <MetricCard label="Total Realized Profit" />
           <MetricCard label="Total Unrealized Profit" />
